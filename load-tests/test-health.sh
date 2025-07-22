@@ -3,7 +3,7 @@
 
 echo "Testing health endpoints..."
 
-services="java-micronaut:8080 kotlin-micronaut:8081 kotlin-ktor:8082 scala-zio:8083 golang:8084"
+services="java-micronaut:8080 kotlin-micronaut:8081 kotlin-ktor:8082 scala-zio:8083 golang:8084 kotlin-springboot:8085"
 
 for service in $services; do
     echo "Testing $service/health"

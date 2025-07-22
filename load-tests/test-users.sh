@@ -4,7 +4,7 @@
 echo "MongoDB Users Endpoint Test"
 echo "==========================="
 
-services="java-micronaut:8080 kotlin-micronaut:8081 kotlin-ktor:8082 scala-zio:8083 golang:8084"
+services="java-micronaut:8080 kotlin-micronaut:8081 kotlin-ktor:8082 scala-zio:8083 golang:8084 kotlin-springboot:8085"
 
 echo "Testing all users endpoint..."
 echo ""

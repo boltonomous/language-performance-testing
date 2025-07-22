@@ -89,6 +89,24 @@ services:
     networks:
       - bakeoff-network
 
+  kotlin-springboot:
+    build:
+      context: ./kotlin-springboot
+      dockerfile: Dockerfile
+    container_name: kotlin-springboot-bakeoff
+    ports:
+      - "8085:8085"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8085/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    networks:
+      - bakeoff-network
+
   # Load testing container with common tools
   load-tester:
     image: alpine:latest
@@ -104,6 +122,7 @@ services:
       - kotlin-ktor
       - golang
       - scala-zio
+      - kotlin-springboot
     networks:
       - bakeoff-network
     volumes:
@@ -124,6 +143,7 @@ services:
         echo '  kotlin-ktor:8082/health' &&
         echo '  golang:8084/health' &&
         echo '  scala-zio:8083/health' &&
+        echo '  kotlin-springboot:8085/health' &&
         sleep infinity
       "
 

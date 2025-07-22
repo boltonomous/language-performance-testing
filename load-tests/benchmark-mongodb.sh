@@ -4,8 +4,8 @@
 echo "MongoDB Performance Benchmark - All Services"
 echo "==============================================="
 
-# All services now working: Go, Kotlin Ktor, Scala ZIO, Java & Kotlin Micronaut
-services="golang:8084 kotlin-ktor:8082 scala-zio:8083 java-micronaut:8080 kotlin-micronaut:8081"
+# All services now working: Go, Kotlin Ktor, Scala ZIO, Java & Kotlin Micronaut, Kotlin Spring Boot
+services="golang:8084 kotlin-ktor:8082 scala-zio:8083 java-micronaut:8080 kotlin-micronaut:8081 kotlin-springboot:8085"
 
 # Parameters
 REQUESTS=${1:-1000}

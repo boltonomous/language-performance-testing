@@ -13,12 +13,7 @@ This is a collection of performance-oriented JVM projects, including both legacy
    - **kotlin-micronaut/** - Kotlin + Micronaut (port 8081) 
    - **kotlin-ktor/** - Kotlin + Ktor (port 8082)
    - **scala-zio/** - Scala + ZIO (port 8083)
-
-2. **Legacy Projects**
-   - **amp-kotlin/** - Micronaut-based modular monolith with artists module
-   - **bakeoff-ktor-performance/** - Existing Ktor performance testing API
-   - **poweramp-*-service/** - Scala-based microservices (SBT builds)
-   - **amp-kube-configs/** - Kubernetes configuration and deployment scripts
+   - **kotlin-springboot/** - Kotlin + Spring Boot (port 8085)
 
 ## Build Commands
 
@@ -40,6 +35,7 @@ docker build -t java-micronaut ./java-micronaut
 docker build -t kotlin-micronaut ./kotlin-micronaut
 docker build -t kotlin-ktor ./kotlin-ktor
 docker build -t scala-zio ./scala-zio
+docker build -t kotlin-springboot ./kotlin-springboot
 ```
 
 #### Local Development
@@ -63,6 +59,11 @@ cd claude-performance-bakeoff/kotlin-ktor
 cd claude-performance-bakeoff/scala-zio
 sbt compile
 sbt run
+
+# Kotlin + SpringBoot
+cd claude-performance-bakeoff/kotlin-springboot
+./gradlew build
+./gradlew bootRun
 ```
 
 ### Legacy Projects
@@ -81,7 +82,7 @@ sbt run
 
 ### Claude Performance Bake-off
 - All implementations provide identical REST APIs for fair comparison
-- Each runs on different ports (8080-8083) for concurrent testing
+- Each runs on different ports (8080-8083, 8085) for concurrent testing
 - Endpoints: `/health` and `/api/compute` (math operations)
 - Built for performance testing with tools like Apache Bench, wrk, JMeter
 
@@ -95,6 +96,12 @@ sbt run
 - Multi-module SBT builds with separate api/service/config modules
 - Use Play Framework with custom deployment plugins
 - Configuration in `services.conf` and `*.sbt` files
+
+### SpringBoot Projects
+- Uses Spring Boot's embedded Tomcat server
+- Auto-configuration and dependency injection with annotations
+- Properties configuration in `src/main/resources/application.properties`
+- Built-in actuator endpoints for health monitoring
 
 ## Common Development Patterns
 
@@ -113,6 +120,13 @@ open class MyController {
     open fun endpoint(): String = "response"
 }
 ```
+
+### SpringBoot (Kotlin)
+- Controllers: `@RestController`, methods with `@GetMapping`/`@PostMapping`
+- Services: `@Service` for dependency injection
+- Models: Standard data classes with kotlinx.serialization
+- Validation: Jakarta validation annotations (`@Valid`, `@RequestBody`)
+- Unlike Micronaut, classes do NOT need to be `open` for Spring's proxy-based AOP
 
 ## Testing
 
@@ -144,6 +158,7 @@ sbt compile      # SBT projects
 ### JVM Frameworks
 - **Micronaut 4.9.1** - Reactive framework with AOT compilation
 - **Ktor 3.2.2** - Lightweight Kotlin coroutine-based framework  
+- **Spring Boot 3.4.1** - Full-featured framework with embedded server and auto-configuration
 - **Play Framework** - Scala web framework (legacy projects)
 - **ZIO** - Scala functional effects library
 

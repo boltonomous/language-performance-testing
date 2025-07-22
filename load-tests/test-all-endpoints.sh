@@ -4,8 +4,8 @@
 echo "MongoDB Users Endpoint Test"
 echo "============================"
 
-services_health="golang:8084:/health kotlin-ktor:8082:/health scala-zio:8083:/health java-micronaut:8080:/health kotlin-micronaut:8081:/health"
-services_users="golang:8084:/api/users kotlin-ktor:8082:/api/users scala-zio:8083:/api/users java-micronaut:8080:/api/users kotlin-micronaut:8081:/api/users"
+services_health="golang:8084:/health kotlin-ktor:8082:/health scala-zio:8083:/health java-micronaut:8080:/health kotlin-micronaut:8081:/health kotlin-springboot:8085:/health"
+services_users="golang:8084:/api/users kotlin-ktor:8082:/api/users scala-zio:8083:/api/users java-micronaut:8080:/api/users kotlin-micronaut:8081:/api/users kotlin-springboot:8085:/api/users"
 
 echo "Testing health endpoints..."
 echo ""
