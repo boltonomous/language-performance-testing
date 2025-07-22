@@ -1,0 +1,12 @@
+micronaut:
+  application:
+    name: java-micronaut-bakeoff
+  server:
+    port: 8080
+
+endpoints:
+  health:
+    enabled: false
+
+mongodb:
+  uri: mongodb://admin:password@mongodb:27017/bakeoff?authSource=admin

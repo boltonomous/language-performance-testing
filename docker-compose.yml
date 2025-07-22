@@ -1,0 +1,152 @@
+version: '3.8'
+
+services:
+  java-micronaut:
+    build:
+      context: ./java-micronaut
+      dockerfile: Dockerfile
+    container_name: java-micronaut-bakeoff
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    networks:
+      - bakeoff-network
+
+  kotlin-micronaut:
+    build:
+      context: ./kotlin-micronaut
+      dockerfile: Dockerfile
+    container_name: kotlin-micronaut-bakeoff
+    ports:
+      - "8081:8081"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    networks:
+      - bakeoff-network
+
+  kotlin-ktor:
+    build:
+      context: ./kotlin-ktor
+      dockerfile: Dockerfile
+    container_name: kotlin-ktor-bakeoff
+    ports:
+      - "8082:8082"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    networks:
+      - bakeoff-network
+
+  golang:
+    build:
+      context: ./golang
+      dockerfile: Dockerfile
+    container_name: golang-bakeoff
+    ports:
+      - "8084:8084"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8084/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - bakeoff-network
+
+  scala-zio:
+    build:
+      context: ./scala-zio
+      dockerfile: Dockerfile
+    container_name: scala-zio-bakeoff
+    ports:
+      - "8083:8083"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    networks:
+      - bakeoff-network
+
+  # Load testing container with common tools
+  load-tester:
+    image: alpine:latest
+    container_name: load-tester
+    command: |
+      sh -c '
+      apk add --no-cache curl jq bash
+      sleep infinity
+      '
+    depends_on:
+      - java-micronaut
+      - kotlin-micronaut 
+      - kotlin-ktor
+      - golang
+      - scala-zio
+    networks:
+      - bakeoff-network
+    volumes:
+      - ./load-tests:/tests
+    working_dir: /tests
+    # Install load testing tools
+    entrypoint: |
+      sh -c "
+        apk add --no-cache curl apache2-utils wrk &&
+        echo 'Load testing tools installed. Available commands:' &&
+        echo '  ab - Apache Bench' &&
+        echo '  curl - HTTP client' &&
+        echo '  wrk - Modern load testing tool' &&
+        echo '' &&
+        echo 'Service endpoints:' &&
+        echo '  java-micronaut:8080/health' &&
+        echo '  kotlin-micronaut:8081/health' &&
+        echo '  kotlin-ktor:8082/health' &&
+        echo '  golang:8084/health' &&
+        echo '  scala-zio:8083/health' &&
+        sleep infinity
+      "
+
+  # MongoDB service
+  mongodb:
+    image: mongo:7.0
+    container_name: mongodb-bakeoff
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=bakeoff
+    volumes:
+      - ./mongodb-init:/docker-entrypoint-initdb.d
+      - mongodb_data:/data/db
+    networks:
+      - bakeoff-network
+
+networks:
+  bakeoff-network:
+    driver: bridge
+    name: bakeoff-network
+
+volumes:
+  mongodb_data:

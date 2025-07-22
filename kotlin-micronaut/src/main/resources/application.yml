@@ -1,0 +1,12 @@
+micronaut:
+  application:
+    name: kotlin-micronaut-bakeoff
+  server:
+    port: 8081
+
+endpoints:
+  health:
+    enabled: false
+
+mongodb:
+  uri: mongodb://admin:password@mongodb:27017/bakeoff?authSource=admin

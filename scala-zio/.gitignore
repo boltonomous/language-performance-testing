@@ -1,0 +1,39 @@
+# SBT
+target/
+project/target/
+project/project/
+.bsp/
+.bloop/
+.metals/
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+
+# OS
+.DS_Store
+
+# Scala
+*.class
+*.log
+.scala_dependencies
+.worksheet
+.cache*
+
+# Package files
+*.jar
+
+# Virtual machine crash logs
+hs_err_pid*
+replay_pid*
+
+# Ensime
+.ensime
+.ensime_cache/
+
+# Local configuration
+application-local.conf
+local.conf
