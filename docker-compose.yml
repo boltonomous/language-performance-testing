@@ -107,6 +107,24 @@ services:
     networks:
       - bakeoff-network
 
+  scala-play:
+    build:
+      context: ./scala-play
+      dockerfile: Dockerfile
+    container_name: scala-play-bakeoff
+    ports:
+      - "8086:8086"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    networks:
+      - bakeoff-network
+
   # Load testing container with common tools
   load-tester:
     image: alpine:latest
@@ -123,6 +141,7 @@ services:
       - golang
       - scala-zio
       - kotlin-springboot
+      - scala-play
     networks:
       - bakeoff-network
     volumes:
@@ -144,6 +163,7 @@ services:
         echo '  golang:8084/health' &&
         echo '  scala-zio:8083/health' &&
         echo '  kotlin-springboot:8085/health' &&
+        echo '  scala-play:8086/health' &&
         sleep infinity
       "
 

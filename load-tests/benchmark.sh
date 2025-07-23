@@ -4,7 +4,7 @@
 echo "Performance Benchmark - JVM Framework Comparison"
 echo "================================================"
 
-services="java-micronaut:8080 kotlin-micronaut:8081 kotlin-ktor:8082 scala-zio:8083 golang:8084 kotlin-springboot:8085"
+services="java-micronaut:8080 kotlin-micronaut:8081 kotlin-ktor:8082 scala-zio:8083 golang:8084 kotlin-springboot:8085 scala-play:8086"
 
 # Parameters
 REQUESTS=${1:-1000}

@@ -10,6 +10,7 @@ A comprehensive performance comparison between JVM-based web frameworks and Go f
 4. **Scala 3 + ZIO 2** - Modern Scala with functional effect system (Port 8083)
 5. **Go + Gin** - Lightweight Go web framework (Port 8084)
 6. **Kotlin + Spring Boot** - Kotlin with mature Spring framework (Port 8085)
+7. **Scala 2.13 + Play Framework** - Traditional Scala web framework (Port 8086)
 
 ## API Endpoints
 
@@ -92,6 +93,8 @@ Each application runs on a different port to allow concurrent testing:
 - Kotlin + Ktor: `http://localhost:8082`
 - Scala 3 + ZIO 2: `http://localhost:8083`
 - Go + Gin: `http://localhost:8084`
+- Kotlin + Spring Boot: `http://localhost:8085`
+- Scala 2.13 + Play: `http://localhost:8086`
 
 ## Building and Running
 
@@ -121,6 +124,12 @@ cd scala-zio && sbt run
 
 # Go + Gin (port 8084)
 cd golang && go run cmd/main.go
+
+# Kotlin + Spring Boot (port 8085)
+cd kotlin-springboot && ./gradlew bootRun
+
+# Scala 2.13 + Play Framework (port 8086) - requires SBT environment
+cd scala-play && sbt run
 ```
 
 ### Build Status
@@ -129,6 +138,8 @@ cd golang && go run cmd/main.go
 - ✅ **Kotlin + Ktor** - Builds and runs successfully 
 - ✅ **Scala 3 + ZIO 2** - Builds and runs successfully with Docker
 - ✅ **Go + Gin** - Builds and runs successfully
+- ✅ **Kotlin + Spring Boot** - Builds and runs successfully
+- ✅ **Scala 2.13 + Play Framework** - Builds and runs successfully with Docker
 
 See individual README files in each subdirectory for detailed build instructions.
 
@@ -180,83 +191,9 @@ curl http://localhost:8080/api/users?department=Engineering
 
 ## Performance Results
 
-Performance benchmark conducted using Docker containers with 5000 requests and 50 concurrent connections:
+📊 **[View Comprehensive Performance Analysis →](Performance_Results.md)**
 
-### Health Endpoint Performance
-
-| Framework | Requests/sec | Avg Time (ms) | Rank |
-|-----------|-------------|---------------|------|
-| **Go + Gin** | 28,247 | 1.77 | 🥇 1st |
-| **Scala 3 + ZIO 2** | 14,265 | 3.50 | 🥈 2nd |
-| **Java + Micronaut** | 11,077 | 4.51 | 🥉 3rd |
-| **Kotlin + Spring Boot** | 10,649 | 4.70 | 4th |
-| **Kotlin + Ktor** | 10,559 | 4.74 | 5th |
-| **Kotlin + Micronaut** | 8,975 | 5.57 | 6th |
-
-### Compute Endpoint Performance
-
-| Framework | Requests/sec | Avg Time (ms) | Rank |
-|-----------|-------------|---------------|------|
-| **Go + Gin** | 26,027 | 1.92 | 🥇 1st |
-| **Kotlin + Spring Boot** | 12,243 | 4.08 | 🥈 2nd |
-| **Kotlin + Ktor** | 12,106 | 4.13 | 🥉 3rd |
-| **Scala 3 + ZIO 2** | 11,564 | 4.32 | 4th |
-| **Kotlin + Micronaut** | 9,118 | 5.48 | 5th |
-| **Java + Micronaut** | 7,217 | 6.93 | 6th |
-
-### MongoDB Users Endpoint Performance
-
-Performance benchmark for database operations with 5000 requests and 50 concurrent connections:
-
-#### All Users Query (100 records)
-| Framework | Requests/sec | Avg Time (ms) | Rank |
-|-----------|-------------|---------------|------|
-| **Kotlin + Spring Boot** | 4,471 | 11.18 | 🥇 1st |
-| **Kotlin + Ktor** | 4,342 | 11.52 | 🥈 2nd |
-| **Go + Gin** | 3,643 | 13.72 | 🥉 3rd |
-| **Java + Micronaut** | 3,051 | 16.39 | 4th |
-| **Kotlin + Micronaut** | 2,588 | 19.32 | 5th |
-| **Scala 3 + ZIO 2** | 1,650 | 30.31 | 6th |
-
-#### Filtered Query (22 Engineering records)
-| Framework | Requests/sec | Avg Time (ms) | Rank |
-|-----------|-------------|---------------|------|
-| **Go + Gin** | 11,268 | 4.44 | 🥇 1st |
-| **Kotlin + Spring Boot** | 6,630 | 7.54 | 🥈 2nd |
-| **Kotlin + Ktor** | 6,184 | 8.09 | 🥉 3rd |
-| **Java + Micronaut** | 4,241 | 11.79 | 4th |
-| **Kotlin + Micronaut** | 4,107 | 12.18 | 5th |
-| **Scala 3 + ZIO 2** | 3,947 | 12.67 | 6th |
-
-### Key Findings
-
-#### Overall Performance
-- **Go dominates health/compute** with 2-3x better performance than JVM solutions
-- **Spring Boot emerges as database champion** - outperforms even Go in full database queries
-- **Kotlin frameworks excel**: Spring Boot and Ktor lead JVM performance across scenarios
-- **Scala 3 + ZIO 2** surprisingly leads JVM health endpoint performance  
-- **Framework ecosystem maturity matters** - Spring Boot's optimizations clearly visible in database operations
-- **Docker-based testing** ensures consistent, reproducible results
-
-#### Database Operations - **Spring Boot Revolution**
-- **Spring Boot dominates database operations** - 4.5K req/sec beats Go's 3.6K req/sec in full queries
-- **JVM frameworks now lead database performance**: Spring Boot and Ktor excel with 4K+ req/sec
-- **Ecosystem maturity wins**: Years of Spring Data and connection pooling optimization pays off
-- **Performance consistency**: Database response times much more consistent (7-30ms range) than previous tests
-- **Filtered queries reveal performance characteristics**: Some frameworks scale better with smaller payloads
-- **Java Micronaut particularly struggles** with filtered queries (311 req/sec - 10x slower than Go)
-- **Database latency vs serialization**: Response times range from 6-64ms indicating varying efficiency
-- **Full-stack integration** successfully demonstrates real-world database scenarios across all frameworks
-
-### Test Environment
-- **Container**: Docker with controlled resource allocation
-- **JVM Settings**: `-Xmx512m -Xms256m` for all JVM applications
-- **Load Pattern**: 
-  - Health/Compute: 1000 requests, 10 concurrent connections
-  - MongoDB: 2000 requests, 20 concurrent connections
-- **Database**: MongoDB 7.0 with 100 sample user records
-- **Tool**: Apache Bench (ab)
-- **Date**: July 2025
+The complete performance benchmarking results, including tests with varying load levels (1K, 10K, 100K requests) and concurrency patterns (10, 200 concurrent connections), are available in the dedicated performance results document.
 
 ## Implementation Status
 
@@ -266,33 +203,13 @@ Performance benchmark for database operations with 5000 requests and 50 concurre
 - **Scala 3 + ZIO 2**: Full implementation with all endpoints
 - **Java + Micronaut**: Full implementation with all endpoints
 - **Kotlin + Micronaut**: Full implementation with all endpoints
+- **Kotlin + Spring Boot**: Full implementation with all endpoints
+- **Scala 2.13 + Play Framework**: Full implementation with all endpoints
 
 ### Resolved Issues ✅
 1. **~~Micronaut Health Endpoints~~**: ✅ Fixed - All services respond properly at `/health`
 2. **~~Java Micronaut MongoDB~~**: ✅ Fixed - Type casting error resolved
 3. **~~Kotlin Micronaut MongoDB~~**: ✅ Fixed - Now returns structured response object
 
-All frameworks now provide complete implementations with consistent API endpoints, enabling comprehensive performance comparison across health checks, compute operations, and database interactions.
+All 7 frameworks now provide complete implementations with consistent API endpoints, enabling comprehensive performance comparison across health checks, compute operations, and database interactions.
 
-## Performance Summary & Insights
-
-### Framework Rankings by Use Case
-
-| Use Case | 🥇 1st | 🥈 2nd | 🥉 3rd | 4th | 5th | 6th |
-|----------|--------|--------|--------|-----|-----|-----|
-| **Health Checks** | Go + Gin<br/>28K req/sec | Scala 3 + ZIO 2<br/>14K req/sec | Java + Micronaut<br/>11K req/sec | Kotlin + Spring Boot<br/>11K req/sec | Kotlin + Ktor<br/>11K req/sec | Kotlin + Micronaut<br/>9K req/sec |
-| **Compute Operations** | Go + Gin<br/>26K req/sec | Kotlin + Spring Boot<br/>12K req/sec | Kotlin + Ktor<br/>12K req/sec | Scala 3 + ZIO 2<br/>12K req/sec | Kotlin + Micronaut<br/>9K req/sec | Java + Micronaut<br/>7K req/sec |
-| **Database (Full)** | Kotlin + Spring Boot<br/>4.5K req/sec | Kotlin + Ktor<br/>4.3K req/sec | Go + Gin<br/>3.6K req/sec | Java + Micronaut<br/>3.1K req/sec | Kotlin + Micronaut<br/>2.6K req/sec | Scala 3 + ZIO 2<br/>1.7K req/sec |
-| **Database (Filtered)** | Go + Gin<br/>11K req/sec | Kotlin + Spring Boot<br/>7K req/sec | Kotlin + Ktor<br/>6K req/sec | Java + Micronaut<br/>4K req/sec | Kotlin + Micronaut<br/>4K req/sec | Scala 3 + ZIO 2<br/>4K req/sec |
-
-### Key Architectural Insights
-
-1. **Go + Gin**: Still dominates health/compute scenarios - lightweight, compiled, excellent for CPU-intensive services
-2. **Kotlin + Spring Boot**: **NEW DATABASE CHAMPION** - mature ecosystem delivers exceptional database performance (4.5K req/sec)
-3. **Kotlin + Ktor**: Balanced JVM framework - strong across all scenarios with coroutines for async operations
-4. **Scala 3 + ZIO 2**: Surprisingly leads JVM health performance - good balance for functional business logic
-5. **Micronaut**: Improved but inconsistent - better database performance than previous tests but still variable
-6. **Framework ecosystem maturity**: Spring Boot's years of optimization clearly benefit database-heavy applications
-
-### Game-Changing Discovery
-**Spring Boot's database dominance** (4.5K req/sec vs Go's 3.6K req/sec) demonstrates that **ecosystem maturity can overcome language performance gaps**. This comprehensive comparison shows that framework selection should prioritize **workload-specific strengths** over general benchmarks.
