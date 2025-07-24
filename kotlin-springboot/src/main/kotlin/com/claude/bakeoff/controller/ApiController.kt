@@ -3,6 +3,8 @@ package com.claude.bakeoff.controller
 import com.claude.bakeoff.model.ComputeRequest
 import com.claude.bakeoff.model.ComputeResponse
 import com.claude.bakeoff.model.HealthResponse
+import com.claude.bakeoff.model.UsersResponse
+import com.claude.bakeoff.repository.UserRepository
 import com.claude.bakeoff.service.MathService
 import org.springframework.http.CacheControl
 import org.springframework.http.ResponseEntity
@@ -11,7 +13,10 @@ import jakarta.validation.Valid
 import java.util.concurrent.TimeUnit
 
 @RestController
-class ApiController(private val mathService: MathService) {
+class ApiController(
+    private val mathService: MathService,
+    private val userRepository: UserRepository
+) {
     
     @GetMapping("/health")
     fun health(): ResponseEntity<HealthResponse> {
@@ -47,5 +52,30 @@ class ApiController(private val mathService: MathService) {
         )
         
         return ResponseEntity.ok(response)
+    }
+    
+    @GetMapping("/api/users")
+    fun getUsers(@RequestParam(required = false) department: String?): ResponseEntity<UsersResponse> {
+        val startTime = System.currentTimeMillis()
+        
+        val users = if (department.isNullOrEmpty()) {
+            userRepository.findAll()
+        } else {
+            userRepository.findByDepartment(department)
+        }
+        
+        val processingTime = System.currentTimeMillis() - startTime
+        
+        val response = UsersResponse(
+            users = users,
+            count = users.size,
+            totalUsers = userRepository.count(),
+            processingTimeMs = processingTime
+        )
+        
+        return ResponseEntity.ok()
+            .cacheControl(CacheControl.maxAge(300, TimeUnit.SECONDS))
+            .header("Surrogate-Control", "max-age=300")
+            .body(response)
     }
 }
